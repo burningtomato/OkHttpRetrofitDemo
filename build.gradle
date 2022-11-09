@@ -1,0 +1,20 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+plugins {
+    id 'com.android.application' version '7.2.1' apply false
+    id 'com.android.library' version '7.2.1' apply false
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+ext{
+    minSdk = 24
+    compileSdk = 32
+    targetSdkVersion = 33
+
+    versionCode = 1
+    versionName = "1.0"
+
+    retrofit = "2.9.0"
+}
