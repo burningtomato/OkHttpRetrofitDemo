@@ -8,6 +8,7 @@ import com.xlkj.network.util.ORUtil;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
@@ -29,22 +30,13 @@ public class BaseUrlIntercept implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         request = chain.request();
-//        生命周期监控 是否取消了访问
-        headerTmp = request.header(ActivityLiveUtil.HEADER_ACT_NAME);
-        aBooleanTmp = ActivityLiveUtil.getActLiveMap().get(headerTmp);
-        if (aBooleanTmp == null || !aBooleanTmp) {
-            //        取消请求
-            chain.call().cancel();
-            Log.d("BaseUrlIntercept", "取消请求");
-        } else {
-            request = chain.request().newBuilder().removeHeader(ActivityLiveUtil.HEADER_ACT_NAME).build();
-        }
 
         if (request == null) {
             return null;
         }
 
         domainName = obtainDomain(request);
+        long t1 = System.nanoTime();//请求发起的时间
         if (TextUtils.isEmpty(domainName)) {
             //打印出参
             Log.d("BaseUrlIntercept.intercept", "访问的url =====\n" +
@@ -72,7 +64,13 @@ public class BaseUrlIntercept implements Interceptor {
                         request.method() + ": " + request.url());
                 response = chain.proceed(request);
             }
+
         }
+        long t2 = System.nanoTime();//收到响应的时间
+        Log.d("BaseUrlIntercept", String.format(Locale.CHINA, "接收响应:%s%n请求时间:%.1fms%n报文信息:%s",
+                response.request().url(),
+                (t2 - t1) / 1e6d,
+                response.headers()));
 //打印出参
         Log.d("BaseUrlIntercept.intercept", "网络返回数据 ====\n" + response.peekBody(1024 * 1024).string());
         return response;
@@ -90,23 +88,35 @@ public class BaseUrlIntercept implements Interceptor {
         return request.header(DOMAIN_NAME);
     }
 
+//    /**
+//     * 管理：取消请求
+//     *
+//     * @param chain
+//     */
+//    private Chain isCancle(Chain chain) {
+//        headerTmp = chain.request().header(ActivityLiveUtil.HEADER_ACT_NAME);
+//        aBooleanTmp = ActivityLiveUtil.getActLiveMap().get(headerTmp);
+//        if (aBooleanTmp == null || !aBooleanTmp) {
+//            //        取消请求
+//            chain.call().cancel();
+//            Log.d("BaseUrlIntercept", "取消请求");
+//        } else {
+//            chain.request().newBuilder().removeHeader(ActivityLiveUtil.HEADER_ACT_NAME).build();
+//        }
+//
+//
+//    }
+
     /**
-     * 管理：取消请求
-     *
-     * @param chain
+     * 监听网络访问速度
      */
-    private Chain isCancle(Chain chain) {
-        headerTmp = chain.request().header(ActivityLiveUtil.HEADER_ACT_NAME);
-        aBooleanTmp = ActivityLiveUtil.getActLiveMap().get(headerTmp);
-        if (aBooleanTmp == null || !aBooleanTmp) {
-            //        取消请求
-            chain.call().cancel();
-            Log.d("BaseUrlIntercept", "取消请求");
-        } else {
-            chain.request().newBuilder().removeHeader(ActivityLiveUtil.HEADER_ACT_NAME).build();
-        }
-
-
+    public interface OnNetResponseTimeListener {
+        /**
+         * @param t 询问到返回 总共需要的时间
+         */
+        void onNetResponseTimeListener(double t);
     }
+
+    public static OnNetResponseTimeListener onNetResponseTimeListener;
 
 }

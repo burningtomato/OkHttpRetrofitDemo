@@ -19,8 +19,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public enum ORUtil {
     INSTACE;
 
-
-
     private Retrofit retrofit;
     private String baseUrl;
 
@@ -63,28 +61,7 @@ public enum ORUtil {
         }
     }
 
-    /**
-     *
-     * @param callback
-     * @param handler
-     * @param successId
-     * @param errorid
-     * @param <T>
-     */
-    public <T> void  getCall(Call<T> callback, Handler handler, int successId, int errorid){
-        callback.enqueue(new Callback<T>() {
-            @Override
-            public void onResponse(Call<T> call, Response<T> response) {
-                handler.obtainMessage(successId, response.body()).sendToTarget();
-            }
 
-            @Override
-            public void onFailure(Call<T> call, Throwable t) {
-                HandlerException.ResponseThrowable throwable = HandlerException.handleException(t);
-                handler.obtainMessage(errorid, throwable.getMessage()).sendToTarget();
-            }
-        });
-    }
 
 
 }

@@ -3,6 +3,7 @@ package com.xlkj.okhttpretrofitdemo.base;
 
 import androidx.annotation.Nullable;
 
+import com.xlkj.network.util.ActivityLiveUtil;
 import com.xlkj.network.util.ORUtil;
 import com.xlkj.okhttpretrofitdemo.bean.HomeBean;
 import com.xlkj.okhttpretrofitdemo.bean.HomeDataBean;
@@ -19,6 +20,6 @@ public interface WanAndroidApi extends BaseApi {
 
     @GET(UrlDatas.HomeList)
     Call<BaseBean<HomeDataBean>> getHomeList(
-            @Header(ORUtil.HEADER_ACT_NAME) @Nullable String actName,
+            @Header(ActivityLiveUtil.HEADER_ACT_NAME) @Nullable String actName,
             @Path("page") int page);
 }

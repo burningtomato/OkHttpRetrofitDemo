@@ -2,6 +2,7 @@ package com.xlkj.okhttpretrofitdemo;
 
 import androidx.annotation.NonNull;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.Message;
@@ -22,10 +23,11 @@ public class MainActivity extends BaseActivity {
     }
 
     public void getDatas(){
-        ORUtil.INSTACE.getCall(
+        orCall.getCall(
                 ORUtil.INSTACE.getApiService(UrlDatas.BaseUrl, WanAndroidApi.class).getHomeList(getLocalClassName(),0),
                 handler,1,2
         );
+        startActivity(new Intent(this,SecondActivity.class));
         finish();
     }
 
