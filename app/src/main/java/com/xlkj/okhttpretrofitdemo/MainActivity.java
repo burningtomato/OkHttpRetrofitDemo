@@ -24,11 +24,12 @@ public class MainActivity extends BaseActivity {
 
     public void getDatas(){
         orCall.getCall(
-                ORUtil.INSTACE.getApiService(UrlDatas.BaseUrl, WanAndroidApi.class).getHomeList(getLocalClassName(),0),
+                getWanAndroidApi().getHomeList(getLocalClassName(),0),
                 handler,1,2
         );
-        startActivity(new Intent(this,SecondActivity.class));
-        finish();
+//        这个注释开启是测试，能否在切换界面的时候，把原来的网络请求停止了；本人测试成功
+//        startActivity(new Intent(this,SecondActivity.class));
+//        finish();
     }
 
     private ORHandler handler = new ORHandler(Looper.myLooper(), this){
@@ -40,7 +41,7 @@ public class MainActivity extends BaseActivity {
                     System.out.println("成功 msg.obj.toString() = " + msg.obj.toString());
                     break;
                 case 2:
-//                    System.out.println("失败 msg.obj.toString() = " + msg.obj.toString());
+                    System.out.println("失败 msg.obj.toString() = " + msg.obj.toString());
                     break;
                 default:
             }

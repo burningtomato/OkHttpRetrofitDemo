@@ -19,6 +19,11 @@ public class BaseActivity extends AppCompatActivity {
         orCall = new ORCall(this);
     }
 
+    /**获取WanAndroid的Api*/
+    protected WanAndroidApi getWanAndroidApi(){
+        return ORUtil.INSTACE.getApiService(UrlDatas.BaseUrl, WanAndroidApi.class);
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
